@@ -45,11 +45,11 @@ export default {
         }
     },
     mounted() {
-        this.render()
+        this.initManager()
     },
     methods: {
         /*                Render                */
-        render() {
+        initManager() {
             var manager = this
 
             this.getFiles('/')
@@ -70,14 +70,14 @@ export default {
                 successmultiple(files, res) {
                     res.data.map((item) => {
                         if (item.success) {
-                            EventHub.fire('showNotif', {
+                            manager.showNotif({
                                 title: 'Success',
                                 body: `Successfully Uploaded "${item.message}"`,
                                 type: 'success',
                                 duration: 5
                             })
                         } else {
-                            EventHub.fire('showNotif', {
+                            manager.showNotif({
                                 title: 'Error',
                                 body: item.message,
                                 type: 'danger'
@@ -88,7 +88,7 @@ export default {
                     manager.getFiles(manager.folders)
                 },
                 errormultiple(files, res) {
-                    EventHub.fire('showNotif', {
+                    this.showNotif({
                         title: 'Error',
                         body: res,
                         type: 'danger'
@@ -392,7 +392,7 @@ export default {
                     new_folder_name: $('#new_folder_name').val()
                 }, (data) => {
                     if (data.success) {
-                        EventHub.fire('showNotif', {
+                        this.showNotif({
                             title: 'Success',
                             body: `Successfully Created "${data.new_folder_name}" at "${data.full_path}"`,
                             type: 'success',
@@ -400,7 +400,7 @@ export default {
                         })
                         this.getFiles(this.folders)
                     } else {
-                        EventHub.fire('showNotif', {
+                        this.showNotif({
                             title: 'Error',
                             body: data.message,
                             type: 'danger'
@@ -437,10 +437,10 @@ export default {
 
             $('#confirm_delete').click(() => {
                 if (this.bulkItemsCount) {
-                    this.confirm_delete(this.bulkList)
+                    this.delete_file(this.bulkList)
                     $('#blk_slct').trigger('click')
                 } else {
-                    this.confirm_delete([this.selectedFile])
+                    this.delete_file([this.selectedFile])
                 }
             })
 
@@ -451,10 +451,10 @@ export default {
 
             $('#move_btn').click(() => {
                 if (this.bulkItemsCount) {
-                    this.move_btn(this.bulkList)
+                    this.move_file(this.bulkList)
                     $('#blk_slct').trigger('click')
                 } else {
-                    this.move_btn([this.selectedFile])
+                    this.move_file([this.selectedFile])
                 }
             })
 
@@ -478,7 +478,7 @@ export default {
                     new_filename: new_filename
                 }, (data) => {
                     if (data.success) {
-                        EventHub.fire('showNotif', {
+                        this.showNotif({
                             title: 'Success',
                             body: `Successfully Renamed "${filename}" to "${data.new_filename}"`,
                             type: 'success',
@@ -489,7 +489,7 @@ export default {
                             this.updateDirsList()
                         }
                     } else {
-                        EventHub.fire('showNotif', {
+                        this.showNotif({
                             title: 'Error',
                             body: data.message,
                             type: 'danger'
@@ -543,14 +543,14 @@ export default {
             var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)))
             return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i]
         },
-        confirm_delete(files) {
+        delete_file(files) {
             $.post(route('media.delete_file_folder'), {
                 folder_location: this.folders,
                 deleted_files: files
             }, (res) => {
                 res.data.map((item) => {
                     if (item.success) {
-                        EventHub.fire('showNotif', {
+                        this.showNotif({
                             title: 'Success',
                             body: `Successfully Deleted "${item.name}"`,
                             type: 'warning',
@@ -558,7 +558,7 @@ export default {
                         })
                         this.removeFromLists(item.name)
                     } else {
-                        EventHub.fire('showNotif', {
+                        this.showNotif({
                             title: 'Error',
                             body: item.message,
                             type: 'danger'
@@ -571,7 +571,7 @@ export default {
                 this.selectFirst()
             })
         },
-        move_btn(files) {
+        move_file(files) {
             var destination = $('#move_folder_dropdown').val()
 
             $.post(route('media.move_file'), {
@@ -581,7 +581,7 @@ export default {
             }, (res) => {
                 res.data.map((item) => {
                     if (item.success) {
-                        EventHub.fire('showNotif', {
+                        this.showNotif({
                             title: 'Success',
                             body: `Successfully moved "${item.name}" to "${destination}"`,
                             type: 'success',
@@ -595,7 +595,7 @@ export default {
                             this.updateDirsList()
                         }
                     } else {
-                        EventHub.fire('showNotif', {
+                        this.showNotif({
                             title: 'Error',
                             body: item.message,
                             type: 'danger'
@@ -871,6 +871,14 @@ export default {
         },
         fileName(name) {
             return name.replace(/(.[^.]*)$/, '')
+        },
+        showNotif(data) {
+            EventHub.fire('showNotif', {
+                title: data.title,
+                body: data.body,
+                type: data.type,
+                duration: data.duration || null
+            })
         }
     },
     watch: {
