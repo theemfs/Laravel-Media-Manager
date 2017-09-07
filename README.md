@@ -74,7 +74,7 @@
 - disable/enable buttons depend on the usage to avoid noise & keep the user focused
 - shortcuts
 
-    |      navigation     |            button           |  keyboard |    mouse     |
+    |      navigation     |            button           |  keyboard |mouse (click) |
     |---------------------|-----------------------------|-----------|--------------|
     |                     | upload *(toolbar)*          | u         |              |
     |                     | refresh *(toolbar)*         | r         |              |
@@ -82,19 +82,19 @@
     |                     | delete *(toolbar)*          | d/del     |              |
     |                     | bulk select *(toolbar)*     | b         |              |
     |                     | bulk select all *(toolbar)* | a         |              |
-    |                     | toggle *(sidebar)*          | t         | click        |
+    |                     | toggle *(sidebar)*          | t         |              |
     |                     | file rename *(modal)*       | enter     |              |
     |                     | file delete *(modal)*       | enter     |              |
     |                     | create new folder *(modal)* | enter     |              |
     | select next         |                             | right     |              |
     | select prev         |                             | left      |              |
-    | selct first         |                             | home      |              |
+    | select first        |                             | home      |              |
     | select last         |                             | end       |              |
     | open folder         |                             | enter     | double click |
-    | go back to prev dir | folderName *(breadcrumb)*   | backspace | click        |
-    | play/pause          | player controller           | space     |              |
-    | view image          | sidebar image               | space     | click        |
-    | hide image          |                             | space/esc | click        |
+    | go back to prev dir | folderName *(breadcrumb)*   | backspace |              |
+    | play/pause          |player controller *(sidebar)*| space     |              |
+    | view image          | image *(sidebar)*           | space     |              |
+    | hide image          | image *(light-box)*         | space/esc |              |
 
 ## Config
 **config/mediaManager.php**
@@ -109,17 +109,17 @@ return [
     /*
      * filesystem disk
      */
-    'storage_disk'=> 'public',
+    'storage_disk' => 'public',
 
     /*
      * remove any file special chars except (. _ -)
      */
-    'allowed_fileNames_chars'=> '.\_\-',
+    'allowed_fileNames_chars' => '.\_\-',
 
     /*
      * remove any folder special chars except (_ -)
      */
-    'allowed_folderNames_chars'=> '\_\-',
+    'allowed_folderNames_chars' => '\_\-',
 
     /*
      * disallow uploading files with the following mimetypes
@@ -130,7 +130,7 @@ return [
     /*
      * when file names gets cleand up
      */
-    'sanitized_text'=> 'sanitized',
+    'sanitized_text' => 'sanitized',
 
     /*
      * css farmework
